@@ -49,8 +49,6 @@ class FetchUser(AuthView):
             logger.error("Missing email in id_token payload: %s" % id_token)
             return helper.error(ERR_INVALID_RESPONSE)
 
-        logger.info("OIDC Payload: %s" % payload)
-        logger.info("OIDC Version: %s" % self.version)
         # support legacy style domains with pure domain regexp
         user_domain = extract_domain(payload["email"])
         if self.version is None:
