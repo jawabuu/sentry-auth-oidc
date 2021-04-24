@@ -7,7 +7,9 @@ from sentry.utils import json
 from sentry.utils.signing import urlsafe_b64decode
 from six.moves import map as _map
 
-from .constants import ERR_INVALID_RESPONSE, ISSUER, ERR_INVALID_DOMAIN, OIDC_DOMAIN_ALLOWLIST, OIDC_DOMAIN_BLOCKLIST
+from .constants import (
+    ERR_INVALID_RESPONSE, ISSUER, ERR_INVALID_DOMAIN, OIDC_DOMAIN_ALLOWLIST, OIDC_DOMAIN_BLOCKLIST,
+)
 
 logger = logging.getLogger("sentry.auth.oidc")
 
@@ -47,8 +49,6 @@ class FetchUser(AuthView):
             logger.error("Missing email in id_token payload: %s" % id_token)
             return helper.error(ERR_INVALID_RESPONSE)
 
-        logger.info("OIDC Payload: %s" % payload)
-        logger.info("OIDC Version: %s" % self.version)
         # support legacy style domains with pure domain regexp
         if self.version is None:
             domain = extract_domain(payload["email"])
@@ -64,7 +64,6 @@ class FetchUser(AuthView):
         if OIDC_DOMAIN_ALLOWLIST != set() and domain not in OIDC_DOMAIN_ALLOWLIST:
             return helper.error(ERR_INVALID_DOMAIN % (domain,))
 
-        logger.info("User domain: %s" % domain)
         helper.bind_state("domain", domain)
         helper.bind_state("user", payload)
 
